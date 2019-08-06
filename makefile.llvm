@@ -1,0 +1,14 @@
+CPPFLAGS=$(shell llvm-config --cxxflags)
+LDFLAGS=$(shell llvm-config --cxxflags --ldflags --libs)
+
+a.out: lex.yy.c yac.tab.cpp asp.cpp naredbe.cpp tipovi.cpp codegen.cpp
+	clang++-6.0 -ggdb3 -std=c++11 -Wall $(LDFLAGS) -o $@ $^
+lex.yy.o: lex.yy.c parser.tab.hpp
+	clang++-6.0 $(CPPFLAGS) -Wno-deprecated -c -o $@ $<
+lex.yy.c: lex.lex
+	flex $<
+yac.tab.cpp yac.tab.hpp: yac.ypp
+	bison -d -v $<
+
+
+

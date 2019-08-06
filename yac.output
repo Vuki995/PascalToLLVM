@@ -1,0 +1,3058 @@
+Terminals unused in grammar
+
+   bit_and
+   bit_or
+   bit_not
+
+
+State 126 conflicts: 2 shift/reduce
+State 127 conflicts: 15 shift/reduce
+State 165 conflicts: 2 shift/reduce
+State 166 conflicts: 2 shift/reduce
+State 167 conflicts: 15 shift/reduce
+State 168 conflicts: 15 shift/reduce
+State 169 conflicts: 2 shift/reduce
+State 170 conflicts: 2 shift/reduce
+State 171 conflicts: 2 shift/reduce
+State 172 conflicts: 2 shift/reduce
+State 173 conflicts: 2 shift/reduce
+State 174 conflicts: 2 shift/reduce
+State 175 conflicts: 2 shift/reduce
+State 176 conflicts: 2 shift/reduce
+
+
+Grammar
+
+    0 $accept: start $end
+
+    1 start: program_token id_token ';' def_types consts vars functions procedures blok '.'
+
+    2 def_types: type_token type_list ';'
+    3          | %empty
+
+    4 type_list: type_list ';' arg_list '=' types
+    5          | arg_list '=' types
+
+    6 consts: const_token const_list ';'
+    7       | %empty
+
+    8 const_list: const_list ';' id_token '=' constE
+    9           | id_token '=' constE
+
+   10 constE: num_token
+   11       | string_token
+   12       | bool_token
+
+   13 vars: var_token var_list ';'
+   14     | %empty
+
+   15 functions: functions function_token id_token '(' args ')' ':' types ';' vars blok ';'
+   16          | functions function_token id_token '(' args ')' ':' types ';' forward_token ';'
+   17          | %empty
+
+   18 procedures: procedures procedure_token id_token '(' args ')' ';' vars blok ';'
+   19           | procedures procedure_token id_token '(' args ')' ';' forward_token ';'
+   20           | %empty
+
+   21 types: int_token
+   22      | float_token
+   23      | char_token
+   24      | id_token
+   25      | array_token '[' num_token '.' '.' num_token ']' of_token types
+   26      | '^' types
+   27      | bool_type
+   28      | record_token records ';' end_token
+
+   29 records: records ';' id_token ':' types
+   30        | id_token ':' types
+
+   31 args: var_list
+   32     | %empty
+
+   33 var_list: var_list ';' arg_list ':' types
+   34         | arg_list ':' types
+
+   35 arg_list: arg_list ',' id_token
+   36         | id_token
+
+   37 blok: begin_token lines end_token
+
+   38 lines: lines line ';'
+   39      | line ';'
+
+   40 line: print_token '(' E ')'
+   41     | read_token '(' E ')'
+   42     | ids '=' EP
+   43     | if_token '(' E ')' then_token blok
+   44     | if_token '(' E ')' then_token blok else_token blok
+   45     | break_token
+   46     | continue_token
+   47     | while_token E do_token blok
+   48     | repeat_token lines until_token E
+   49     | for_token id_token '=' E to_token E do_token blok
+   50     | id_token '(' nizE ')'
+   51     | id_token '(' ')'
+   52     | exit_token
+
+   53 ids: ids '[' E ']'
+   54    | ids '^'
+   55    | '(' ids ')'
+   56    | ids '.' id_token
+   57    | id_token
+
+   58 EP: '@' E
+   59   | E
+
+   60 E: E '+' E
+   61  | E '-' E
+   62  | E '*' E
+   63  | E '/' E
+   64  | E bita_token E
+   65  | E bito_token E
+   66  | bitn_token E
+   67  | E GT E
+   68  | E LT E
+   69  | E EQ E
+   70  | E NE E
+   71  | E and_token E
+   72  | E or_token E
+   73  | not_token E
+   74  | '(' E ')'
+   75  | E '^'
+   76  | E '[' E ']'
+   77  | E '.' id_token
+   78  | id_token
+   79  | num_token
+   80  | string_token
+   81  | id_token '(' ')'
+   82  | id_token '(' nizE ')'
+   83  | bool_token
+
+   84 nizE: nizE ',' EP
+   85     | EP
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 15 16 18 19 40 41 43 44 50 51 55 74 81 82
+')' (41) 15 16 18 19 40 41 43 44 50 51 55 74 81 82
+'*' (42) 62
+'+' (43) 60
+',' (44) 35 84
+'-' (45) 61
+'.' (46) 1 25 56 77
+'/' (47) 63
+':' (58) 15 16 29 30 33 34
+';' (59) 1 2 4 6 8 13 15 16 18 19 28 29 33 38 39
+'=' (61) 4 5 8 9 42 49
+'@' (64) 58
+'[' (91) 25 53 76
+']' (93) 25 53 76
+'^' (94) 26 54 75
+error (256)
+bool_token (258) 12 83
+num_token (259) 10 25 79
+string_token (260) 11 80
+id_token (261) 1 8 9 15 16 18 19 24 29 30 35 36 49 50 51 56 57 77 78
+    81 82
+begin_token (262) 37
+end_token (263) 28 37
+program_token (264) 1
+print_token (265) 40
+read_token (266) 41
+if_token (267) 43 44
+then_token (268) 43 44
+else_token (269) 44
+function_token (270) 15 16
+procedure_token (271) 18 19
+while_token (272) 47
+do_token (273) 47 49
+for_token (274) 49
+to_token (275) 49
+type_token (276) 2
+forward_token (277) 16 19
+continue_token (278) 46
+break_token (279) 45
+exit_token (280) 52
+repeat_token (281) 48
+until_token (282) 48
+int_token (283) 21
+float_token (284) 22
+char_token (285) 23
+array_token (286) 25
+of_token (287) 25
+const_token (288) 6
+var_token (289) 13
+bool_type (290) 27
+record_token (291) 28
+and_token (292) 71
+or_token (293) 72
+not_token (294) 73
+bita_token (295) 64
+bito_token (296) 65
+bitn_token (297) 66
+LT (298) 68
+GT (299) 67
+EQ (300) 69
+NE (301) 70
+bit_and (302)
+bit_or (303)
+bit_not (304)
+
+
+Nonterminals, with rules where they appear
+
+$accept (65)
+    on left: 0
+start (66)
+    on left: 1, on right: 0
+def_types (67)
+    on left: 2 3, on right: 1
+type_list (68)
+    on left: 4 5, on right: 2 4
+consts (69)
+    on left: 6 7, on right: 1
+const_list (70)
+    on left: 8 9, on right: 6 8
+constE (71)
+    on left: 10 11 12, on right: 8 9
+vars (72)
+    on left: 13 14, on right: 1 15 18
+functions (73)
+    on left: 15 16 17, on right: 1 15 16
+procedures (74)
+    on left: 18 19 20, on right: 1 18 19
+types (75)
+    on left: 21 22 23 24 25 26 27 28, on right: 4 5 15 16 25 26 29
+    30 33 34
+records (76)
+    on left: 29 30, on right: 28 29
+args (77)
+    on left: 31 32, on right: 15 16 18 19
+var_list (78)
+    on left: 33 34, on right: 13 31 33
+arg_list (79)
+    on left: 35 36, on right: 4 5 33 34 35
+blok (80)
+    on left: 37, on right: 1 15 18 43 44 47 49
+lines (81)
+    on left: 38 39, on right: 37 38 48
+line (82)
+    on left: 40 41 42 43 44 45 46 47 48 49 50 51 52, on right: 38 39
+ids (83)
+    on left: 53 54 55 56 57, on right: 42 53 54 55 56
+EP (84)
+    on left: 58 59, on right: 42 84 85
+E (85)
+    on left: 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77
+    78 79 80 81 82 83, on right: 40 41 43 44 47 48 49 53 58 59 60 61
+    62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77
+nizE (86)
+    on left: 84 85, on right: 50 82 84
+
+
+State 0
+
+    0 $accept: . start $end
+
+    program_token  shift, and go to state 1
+
+    start  go to state 2
+
+
+State 1
+
+    1 start: program_token . id_token ';' def_types consts vars functions procedures blok '.'
+
+    id_token  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 start: program_token id_token . ';' def_types consts vars functions procedures blok '.'
+
+    ';'  shift, and go to state 5
+
+
+State 4
+
+    0 $accept: start $end .
+
+    $default  accept
+
+
+State 5
+
+    1 start: program_token id_token ';' . def_types consts vars functions procedures blok '.'
+
+    type_token  shift, and go to state 6
+
+    $default  reduce using rule 3 (def_types)
+
+    def_types  go to state 7
+
+
+State 6
+
+    2 def_types: type_token . type_list ';'
+
+    id_token  shift, and go to state 8
+
+    type_list  go to state 9
+    arg_list   go to state 10
+
+
+State 7
+
+    1 start: program_token id_token ';' def_types . consts vars functions procedures blok '.'
+
+    const_token  shift, and go to state 11
+
+    $default  reduce using rule 7 (consts)
+
+    consts  go to state 12
+
+
+State 8
+
+   36 arg_list: id_token .
+
+    $default  reduce using rule 36 (arg_list)
+
+
+State 9
+
+    2 def_types: type_token type_list . ';'
+    4 type_list: type_list . ';' arg_list '=' types
+
+    ';'  shift, and go to state 13
+
+
+State 10
+
+    5 type_list: arg_list . '=' types
+   35 arg_list: arg_list . ',' id_token
+
+    '='  shift, and go to state 14
+    ','  shift, and go to state 15
+
+
+State 11
+
+    6 consts: const_token . const_list ';'
+
+    id_token  shift, and go to state 16
+
+    const_list  go to state 17
+
+
+State 12
+
+    1 start: program_token id_token ';' def_types consts . vars functions procedures blok '.'
+
+    var_token  shift, and go to state 18
+
+    $default  reduce using rule 14 (vars)
+
+    vars  go to state 19
+
+
+State 13
+
+    2 def_types: type_token type_list ';' .
+    4 type_list: type_list ';' . arg_list '=' types
+
+    id_token  shift, and go to state 8
+
+    $default  reduce using rule 2 (def_types)
+
+    arg_list  go to state 20
+
+
+State 14
+
+    5 type_list: arg_list '=' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 29
+
+
+State 15
+
+   35 arg_list: arg_list ',' . id_token
+
+    id_token  shift, and go to state 30
+
+
+State 16
+
+    9 const_list: id_token . '=' constE
+
+    '='  shift, and go to state 31
+
+
+State 17
+
+    6 consts: const_token const_list . ';'
+    8 const_list: const_list . ';' id_token '=' constE
+
+    ';'  shift, and go to state 32
+
+
+State 18
+
+   13 vars: var_token . var_list ';'
+
+    id_token  shift, and go to state 8
+
+    var_list  go to state 33
+    arg_list  go to state 34
+
+
+State 19
+
+    1 start: program_token id_token ';' def_types consts vars . functions procedures blok '.'
+
+    $default  reduce using rule 17 (functions)
+
+    functions  go to state 35
+
+
+State 20
+
+    4 type_list: type_list ';' arg_list . '=' types
+   35 arg_list: arg_list . ',' id_token
+
+    '='  shift, and go to state 36
+    ','  shift, and go to state 15
+
+
+State 21
+
+   24 types: id_token .
+
+    $default  reduce using rule 24 (types)
+
+
+State 22
+
+   21 types: int_token .
+
+    $default  reduce using rule 21 (types)
+
+
+State 23
+
+   22 types: float_token .
+
+    $default  reduce using rule 22 (types)
+
+
+State 24
+
+   23 types: char_token .
+
+    $default  reduce using rule 23 (types)
+
+
+State 25
+
+   25 types: array_token . '[' num_token '.' '.' num_token ']' of_token types
+
+    '['  shift, and go to state 37
+
+
+State 26
+
+   27 types: bool_type .
+
+    $default  reduce using rule 27 (types)
+
+
+State 27
+
+   28 types: record_token . records ';' end_token
+
+    id_token  shift, and go to state 38
+
+    records  go to state 39
+
+
+State 28
+
+   26 types: '^' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 40
+
+
+State 29
+
+    5 type_list: arg_list '=' types .
+
+    $default  reduce using rule 5 (type_list)
+
+
+State 30
+
+   35 arg_list: arg_list ',' id_token .
+
+    $default  reduce using rule 35 (arg_list)
+
+
+State 31
+
+    9 const_list: id_token '=' . constE
+
+    bool_token    shift, and go to state 41
+    num_token     shift, and go to state 42
+    string_token  shift, and go to state 43
+
+    constE  go to state 44
+
+
+State 32
+
+    6 consts: const_token const_list ';' .
+    8 const_list: const_list ';' . id_token '=' constE
+
+    id_token  shift, and go to state 45
+
+    $default  reduce using rule 6 (consts)
+
+
+State 33
+
+   13 vars: var_token var_list . ';'
+   33 var_list: var_list . ';' arg_list ':' types
+
+    ';'  shift, and go to state 46
+
+
+State 34
+
+   34 var_list: arg_list . ':' types
+   35 arg_list: arg_list . ',' id_token
+
+    ':'  shift, and go to state 47
+    ','  shift, and go to state 15
+
+
+State 35
+
+    1 start: program_token id_token ';' def_types consts vars functions . procedures blok '.'
+   15 functions: functions . function_token id_token '(' args ')' ':' types ';' vars blok ';'
+   16          | functions . function_token id_token '(' args ')' ':' types ';' forward_token ';'
+
+    function_token  shift, and go to state 48
+
+    $default  reduce using rule 20 (procedures)
+
+    procedures  go to state 49
+
+
+State 36
+
+    4 type_list: type_list ';' arg_list '=' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 50
+
+
+State 37
+
+   25 types: array_token '[' . num_token '.' '.' num_token ']' of_token types
+
+    num_token  shift, and go to state 51
+
+
+State 38
+
+   30 records: id_token . ':' types
+
+    ':'  shift, and go to state 52
+
+
+State 39
+
+   28 types: record_token records . ';' end_token
+   29 records: records . ';' id_token ':' types
+
+    ';'  shift, and go to state 53
+
+
+State 40
+
+   26 types: '^' types .
+
+    $default  reduce using rule 26 (types)
+
+
+State 41
+
+   12 constE: bool_token .
+
+    $default  reduce using rule 12 (constE)
+
+
+State 42
+
+   10 constE: num_token .
+
+    $default  reduce using rule 10 (constE)
+
+
+State 43
+
+   11 constE: string_token .
+
+    $default  reduce using rule 11 (constE)
+
+
+State 44
+
+    9 const_list: id_token '=' constE .
+
+    $default  reduce using rule 9 (const_list)
+
+
+State 45
+
+    8 const_list: const_list ';' id_token . '=' constE
+
+    '='  shift, and go to state 54
+
+
+State 46
+
+   13 vars: var_token var_list ';' .
+   33 var_list: var_list ';' . arg_list ':' types
+
+    id_token  shift, and go to state 8
+
+    $default  reduce using rule 13 (vars)
+
+    arg_list  go to state 55
+
+
+State 47
+
+   34 var_list: arg_list ':' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 56
+
+
+State 48
+
+   15 functions: functions function_token . id_token '(' args ')' ':' types ';' vars blok ';'
+   16          | functions function_token . id_token '(' args ')' ':' types ';' forward_token ';'
+
+    id_token  shift, and go to state 57
+
+
+State 49
+
+    1 start: program_token id_token ';' def_types consts vars functions procedures . blok '.'
+   18 procedures: procedures . procedure_token id_token '(' args ')' ';' vars blok ';'
+   19           | procedures . procedure_token id_token '(' args ')' ';' forward_token ';'
+
+    begin_token      shift, and go to state 58
+    procedure_token  shift, and go to state 59
+
+    blok  go to state 60
+
+
+State 50
+
+    4 type_list: type_list ';' arg_list '=' types .
+
+    $default  reduce using rule 4 (type_list)
+
+
+State 51
+
+   25 types: array_token '[' num_token . '.' '.' num_token ']' of_token types
+
+    '.'  shift, and go to state 61
+
+
+State 52
+
+   30 records: id_token ':' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 62
+
+
+State 53
+
+   28 types: record_token records ';' . end_token
+   29 records: records ';' . id_token ':' types
+
+    id_token   shift, and go to state 63
+    end_token  shift, and go to state 64
+
+
+State 54
+
+    8 const_list: const_list ';' id_token '=' . constE
+
+    bool_token    shift, and go to state 41
+    num_token     shift, and go to state 42
+    string_token  shift, and go to state 43
+
+    constE  go to state 65
+
+
+State 55
+
+   33 var_list: var_list ';' arg_list . ':' types
+   35 arg_list: arg_list . ',' id_token
+
+    ':'  shift, and go to state 66
+    ','  shift, and go to state 15
+
+
+State 56
+
+   34 var_list: arg_list ':' types .
+
+    $default  reduce using rule 34 (var_list)
+
+
+State 57
+
+   15 functions: functions function_token id_token . '(' args ')' ':' types ';' vars blok ';'
+   16          | functions function_token id_token . '(' args ')' ':' types ';' forward_token ';'
+
+    '('  shift, and go to state 67
+
+
+State 58
+
+   37 blok: begin_token . lines end_token
+
+    id_token        shift, and go to state 68
+    print_token     shift, and go to state 69
+    read_token      shift, and go to state 70
+    if_token        shift, and go to state 71
+    while_token     shift, and go to state 72
+    for_token       shift, and go to state 73
+    continue_token  shift, and go to state 74
+    break_token     shift, and go to state 75
+    exit_token      shift, and go to state 76
+    repeat_token    shift, and go to state 77
+    '('             shift, and go to state 78
+
+    lines  go to state 79
+    line   go to state 80
+    ids    go to state 81
+
+
+State 59
+
+   18 procedures: procedures procedure_token . id_token '(' args ')' ';' vars blok ';'
+   19           | procedures procedure_token . id_token '(' args ')' ';' forward_token ';'
+
+    id_token  shift, and go to state 82
+
+
+State 60
+
+    1 start: program_token id_token ';' def_types consts vars functions procedures blok . '.'
+
+    '.'  shift, and go to state 83
+
+
+State 61
+
+   25 types: array_token '[' num_token '.' . '.' num_token ']' of_token types
+
+    '.'  shift, and go to state 84
+
+
+State 62
+
+   30 records: id_token ':' types .
+
+    $default  reduce using rule 30 (records)
+
+
+State 63
+
+   29 records: records ';' id_token . ':' types
+
+    ':'  shift, and go to state 85
+
+
+State 64
+
+   28 types: record_token records ';' end_token .
+
+    $default  reduce using rule 28 (types)
+
+
+State 65
+
+    8 const_list: const_list ';' id_token '=' constE .
+
+    $default  reduce using rule 8 (const_list)
+
+
+State 66
+
+   33 var_list: var_list ';' arg_list ':' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 86
+
+
+State 67
+
+   15 functions: functions function_token id_token '(' . args ')' ':' types ';' vars blok ';'
+   16          | functions function_token id_token '(' . args ')' ':' types ';' forward_token ';'
+
+    id_token  shift, and go to state 8
+
+    $default  reduce using rule 32 (args)
+
+    args      go to state 87
+    var_list  go to state 88
+    arg_list  go to state 34
+
+
+State 68
+
+   50 line: id_token . '(' nizE ')'
+   51     | id_token . '(' ')'
+   57 ids: id_token .
+
+    '('  shift, and go to state 89
+
+    $default  reduce using rule 57 (ids)
+
+
+State 69
+
+   40 line: print_token . '(' E ')'
+
+    '('  shift, and go to state 90
+
+
+State 70
+
+   41 line: read_token . '(' E ')'
+
+    '('  shift, and go to state 91
+
+
+State 71
+
+   43 line: if_token . '(' E ')' then_token blok
+   44     | if_token . '(' E ')' then_token blok else_token blok
+
+    '('  shift, and go to state 92
+
+
+State 72
+
+   47 line: while_token . E do_token blok
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 100
+
+
+State 73
+
+   49 line: for_token . id_token '=' E to_token E do_token blok
+
+    id_token  shift, and go to state 101
+
+
+State 74
+
+   46 line: continue_token .
+
+    $default  reduce using rule 46 (line)
+
+
+State 75
+
+   45 line: break_token .
+
+    $default  reduce using rule 45 (line)
+
+
+State 76
+
+   52 line: exit_token .
+
+    $default  reduce using rule 52 (line)
+
+
+State 77
+
+   48 line: repeat_token . lines until_token E
+
+    id_token        shift, and go to state 68
+    print_token     shift, and go to state 69
+    read_token      shift, and go to state 70
+    if_token        shift, and go to state 71
+    while_token     shift, and go to state 72
+    for_token       shift, and go to state 73
+    continue_token  shift, and go to state 74
+    break_token     shift, and go to state 75
+    exit_token      shift, and go to state 76
+    repeat_token    shift, and go to state 77
+    '('             shift, and go to state 78
+
+    lines  go to state 102
+    line   go to state 80
+    ids    go to state 81
+
+
+State 78
+
+   55 ids: '(' . ids ')'
+
+    id_token  shift, and go to state 103
+    '('       shift, and go to state 78
+
+    ids  go to state 104
+
+
+State 79
+
+   37 blok: begin_token lines . end_token
+   38 lines: lines . line ';'
+
+    id_token        shift, and go to state 68
+    end_token       shift, and go to state 105
+    print_token     shift, and go to state 69
+    read_token      shift, and go to state 70
+    if_token        shift, and go to state 71
+    while_token     shift, and go to state 72
+    for_token       shift, and go to state 73
+    continue_token  shift, and go to state 74
+    break_token     shift, and go to state 75
+    exit_token      shift, and go to state 76
+    repeat_token    shift, and go to state 77
+    '('             shift, and go to state 78
+
+    line  go to state 106
+    ids   go to state 81
+
+
+State 80
+
+   39 lines: line . ';'
+
+    ';'  shift, and go to state 107
+
+
+State 81
+
+   42 line: ids . '=' EP
+   53 ids: ids . '[' E ']'
+   54    | ids . '^'
+   56    | ids . '.' id_token
+
+    '^'  shift, and go to state 108
+    '['  shift, and go to state 109
+    '.'  shift, and go to state 110
+    '='  shift, and go to state 111
+
+
+State 82
+
+   18 procedures: procedures procedure_token id_token . '(' args ')' ';' vars blok ';'
+   19           | procedures procedure_token id_token . '(' args ')' ';' forward_token ';'
+
+    '('  shift, and go to state 112
+
+
+State 83
+
+    1 start: program_token id_token ';' def_types consts vars functions procedures blok '.' .
+
+    $default  reduce using rule 1 (start)
+
+
+State 84
+
+   25 types: array_token '[' num_token '.' '.' . num_token ']' of_token types
+
+    num_token  shift, and go to state 113
+
+
+State 85
+
+   29 records: records ';' id_token ':' . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 114
+
+
+State 86
+
+   33 var_list: var_list ';' arg_list ':' types .
+
+    $default  reduce using rule 33 (var_list)
+
+
+State 87
+
+   15 functions: functions function_token id_token '(' args . ')' ':' types ';' vars blok ';'
+   16          | functions function_token id_token '(' args . ')' ':' types ';' forward_token ';'
+
+    ')'  shift, and go to state 115
+
+
+State 88
+
+   31 args: var_list .
+   33 var_list: var_list . ';' arg_list ':' types
+
+    ';'  shift, and go to state 116
+
+    $default  reduce using rule 31 (args)
+
+
+State 89
+
+   50 line: id_token '(' . nizE ')'
+   51     | id_token '(' . ')'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+    ')'           shift, and go to state 117
+    '@'           shift, and go to state 118
+
+    EP    go to state 119
+    E     go to state 120
+    nizE  go to state 121
+
+
+State 90
+
+   40 line: print_token '(' . E ')'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 122
+
+
+State 91
+
+   41 line: read_token '(' . E ')'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 123
+
+
+State 92
+
+   43 line: if_token '(' . E ')' then_token blok
+   44     | if_token '(' . E ')' then_token blok else_token blok
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 124
+
+
+State 93
+
+   83 E: bool_token .
+
+    $default  reduce using rule 83 (E)
+
+
+State 94
+
+   79 E: num_token .
+
+    $default  reduce using rule 79 (E)
+
+
+State 95
+
+   80 E: string_token .
+
+    $default  reduce using rule 80 (E)
+
+
+State 96
+
+   78 E: id_token .
+   81  | id_token . '(' ')'
+   82  | id_token . '(' nizE ')'
+
+    '('  shift, and go to state 125
+
+    $default  reduce using rule 78 (E)
+
+
+State 97
+
+   73 E: not_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 126
+
+
+State 98
+
+   66 E: bitn_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 127
+
+
+State 99
+
+   74 E: '(' . E ')'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 128
+
+
+State 100
+
+   47 line: while_token E . do_token blok
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    do_token    shift, and go to state 129
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+
+State 101
+
+   49 line: for_token id_token . '=' E to_token E do_token blok
+
+    '='  shift, and go to state 145
+
+
+State 102
+
+   38 lines: lines . line ';'
+   48 line: repeat_token lines . until_token E
+
+    id_token        shift, and go to state 68
+    print_token     shift, and go to state 69
+    read_token      shift, and go to state 70
+    if_token        shift, and go to state 71
+    while_token     shift, and go to state 72
+    for_token       shift, and go to state 73
+    continue_token  shift, and go to state 74
+    break_token     shift, and go to state 75
+    exit_token      shift, and go to state 76
+    repeat_token    shift, and go to state 77
+    until_token     shift, and go to state 146
+    '('             shift, and go to state 78
+
+    line  go to state 106
+    ids   go to state 81
+
+
+State 103
+
+   57 ids: id_token .
+
+    $default  reduce using rule 57 (ids)
+
+
+State 104
+
+   53 ids: ids . '[' E ']'
+   54    | ids . '^'
+   55    | '(' ids . ')'
+   56    | ids . '.' id_token
+
+    '^'  shift, and go to state 108
+    '['  shift, and go to state 109
+    '.'  shift, and go to state 110
+    ')'  shift, and go to state 147
+
+
+State 105
+
+   37 blok: begin_token lines end_token .
+
+    $default  reduce using rule 37 (blok)
+
+
+State 106
+
+   38 lines: lines line . ';'
+
+    ';'  shift, and go to state 148
+
+
+State 107
+
+   39 lines: line ';' .
+
+    $default  reduce using rule 39 (lines)
+
+
+State 108
+
+   54 ids: ids '^' .
+
+    $default  reduce using rule 54 (ids)
+
+
+State 109
+
+   53 ids: ids '[' . E ']'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 149
+
+
+State 110
+
+   56 ids: ids '.' . id_token
+
+    id_token  shift, and go to state 150
+
+
+State 111
+
+   42 line: ids '=' . EP
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+    '@'           shift, and go to state 118
+
+    EP  go to state 151
+    E   go to state 120
+
+
+State 112
+
+   18 procedures: procedures procedure_token id_token '(' . args ')' ';' vars blok ';'
+   19           | procedures procedure_token id_token '(' . args ')' ';' forward_token ';'
+
+    id_token  shift, and go to state 8
+
+    $default  reduce using rule 32 (args)
+
+    args      go to state 152
+    var_list  go to state 88
+    arg_list  go to state 34
+
+
+State 113
+
+   25 types: array_token '[' num_token '.' '.' num_token . ']' of_token types
+
+    ']'  shift, and go to state 153
+
+
+State 114
+
+   29 records: records ';' id_token ':' types .
+
+    $default  reduce using rule 29 (records)
+
+
+State 115
+
+   15 functions: functions function_token id_token '(' args ')' . ':' types ';' vars blok ';'
+   16          | functions function_token id_token '(' args ')' . ':' types ';' forward_token ';'
+
+    ':'  shift, and go to state 154
+
+
+State 116
+
+   33 var_list: var_list ';' . arg_list ':' types
+
+    id_token  shift, and go to state 8
+
+    arg_list  go to state 55
+
+
+State 117
+
+   51 line: id_token '(' ')' .
+
+    $default  reduce using rule 51 (line)
+
+
+State 118
+
+   58 EP: '@' . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 155
+
+
+State 119
+
+   85 nizE: EP .
+
+    $default  reduce using rule 85 (nizE)
+
+
+State 120
+
+   59 EP: E .
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    $default  reduce using rule 59 (EP)
+
+
+State 121
+
+   50 line: id_token '(' nizE . ')'
+   84 nizE: nizE . ',' EP
+
+    ')'  shift, and go to state 156
+    ','  shift, and go to state 157
+
+
+State 122
+
+   40 line: print_token '(' E . ')'
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ')'         shift, and go to state 158
+
+
+State 123
+
+   41 line: read_token '(' E . ')'
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ')'         shift, and go to state 159
+
+
+State 124
+
+   43 line: if_token '(' E . ')' then_token blok
+   44     | if_token '(' E . ')' then_token blok else_token blok
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ')'         shift, and go to state 160
+
+
+State 125
+
+   81 E: id_token '(' . ')'
+   82  | id_token '(' . nizE ')'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+    ')'           shift, and go to state 161
+    '@'           shift, and go to state 118
+
+    EP    go to state 119
+    E     go to state 120
+    nizE  go to state 162
+
+
+State 126
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   73  | not_token E .
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 73 (E)]
+    bito_token  [reduce using rule 73 (E)]
+    $default    reduce using rule 73 (E)
+
+
+State 127
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   66  | bitn_token E .
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    and_token   [reduce using rule 66 (E)]
+    or_token    [reduce using rule 66 (E)]
+    bita_token  [reduce using rule 66 (E)]
+    bito_token  [reduce using rule 66 (E)]
+    LT          [reduce using rule 66 (E)]
+    GT          [reduce using rule 66 (E)]
+    EQ          [reduce using rule 66 (E)]
+    NE          [reduce using rule 66 (E)]
+    '+'         [reduce using rule 66 (E)]
+    '-'         [reduce using rule 66 (E)]
+    '*'         [reduce using rule 66 (E)]
+    '/'         [reduce using rule 66 (E)]
+    '^'         [reduce using rule 66 (E)]
+    '['         [reduce using rule 66 (E)]
+    '.'         [reduce using rule 66 (E)]
+    $default    reduce using rule 66 (E)
+
+
+State 128
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   74  | '(' E . ')'
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ')'         shift, and go to state 163
+
+
+State 129
+
+   47 line: while_token E do_token . blok
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 164
+
+
+State 130
+
+   71 E: E and_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 165
+
+
+State 131
+
+   72 E: E or_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 166
+
+
+State 132
+
+   64 E: E bita_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 167
+
+
+State 133
+
+   65 E: E bito_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 168
+
+
+State 134
+
+   68 E: E LT . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 169
+
+
+State 135
+
+   67 E: E GT . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 170
+
+
+State 136
+
+   69 E: E EQ . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 171
+
+
+State 137
+
+   70 E: E NE . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 172
+
+
+State 138
+
+   60 E: E '+' . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 173
+
+
+State 139
+
+   61 E: E '-' . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 174
+
+
+State 140
+
+   62 E: E '*' . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 175
+
+
+State 141
+
+   63 E: E '/' . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 176
+
+
+State 142
+
+   75 E: E '^' .
+
+    $default  reduce using rule 75 (E)
+
+
+State 143
+
+   76 E: E '[' . E ']'
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 177
+
+
+State 144
+
+   77 E: E '.' . id_token
+
+    id_token  shift, and go to state 178
+
+
+State 145
+
+   49 line: for_token id_token '=' . E to_token E do_token blok
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 179
+
+
+State 146
+
+   48 line: repeat_token lines until_token . E
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 180
+
+
+State 147
+
+   55 ids: '(' ids ')' .
+
+    $default  reduce using rule 55 (ids)
+
+
+State 148
+
+   38 lines: lines line ';' .
+
+    $default  reduce using rule 38 (lines)
+
+
+State 149
+
+   53 ids: ids '[' E . ']'
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ']'         shift, and go to state 181
+
+
+State 150
+
+   56 ids: ids '.' id_token .
+
+    $default  reduce using rule 56 (ids)
+
+
+State 151
+
+   42 line: ids '=' EP .
+
+    $default  reduce using rule 42 (line)
+
+
+State 152
+
+   18 procedures: procedures procedure_token id_token '(' args . ')' ';' vars blok ';'
+   19           | procedures procedure_token id_token '(' args . ')' ';' forward_token ';'
+
+    ')'  shift, and go to state 182
+
+
+State 153
+
+   25 types: array_token '[' num_token '.' '.' num_token ']' . of_token types
+
+    of_token  shift, and go to state 183
+
+
+State 154
+
+   15 functions: functions function_token id_token '(' args ')' ':' . types ';' vars blok ';'
+   16          | functions function_token id_token '(' args ')' ':' . types ';' forward_token ';'
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 184
+
+
+State 155
+
+   58 EP: '@' E .
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    $default  reduce using rule 58 (EP)
+
+
+State 156
+
+   50 line: id_token '(' nizE ')' .
+
+    $default  reduce using rule 50 (line)
+
+
+State 157
+
+   84 nizE: nizE ',' . EP
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+    '@'           shift, and go to state 118
+
+    EP  go to state 185
+    E   go to state 120
+
+
+State 158
+
+   40 line: print_token '(' E ')' .
+
+    $default  reduce using rule 40 (line)
+
+
+State 159
+
+   41 line: read_token '(' E ')' .
+
+    $default  reduce using rule 41 (line)
+
+
+State 160
+
+   43 line: if_token '(' E ')' . then_token blok
+   44     | if_token '(' E ')' . then_token blok else_token blok
+
+    then_token  shift, and go to state 186
+
+
+State 161
+
+   81 E: id_token '(' ')' .
+
+    $default  reduce using rule 81 (E)
+
+
+State 162
+
+   82 E: id_token '(' nizE . ')'
+   84 nizE: nizE . ',' EP
+
+    ')'  shift, and go to state 187
+    ','  shift, and go to state 157
+
+
+State 163
+
+   74 E: '(' E ')' .
+
+    $default  reduce using rule 74 (E)
+
+
+State 164
+
+   47 line: while_token E do_token blok .
+
+    $default  reduce using rule 47 (line)
+
+
+State 165
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   71  | E and_token E .
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 71 (E)]
+    bito_token  [reduce using rule 71 (E)]
+    $default    reduce using rule 71 (E)
+
+
+State 166
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   72  | E or_token E .
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 72 (E)]
+    bito_token  [reduce using rule 72 (E)]
+    $default    reduce using rule 72 (E)
+
+
+State 167
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   64  | E bita_token E .
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    and_token   [reduce using rule 64 (E)]
+    or_token    [reduce using rule 64 (E)]
+    bita_token  [reduce using rule 64 (E)]
+    bito_token  [reduce using rule 64 (E)]
+    LT          [reduce using rule 64 (E)]
+    GT          [reduce using rule 64 (E)]
+    EQ          [reduce using rule 64 (E)]
+    NE          [reduce using rule 64 (E)]
+    '+'         [reduce using rule 64 (E)]
+    '-'         [reduce using rule 64 (E)]
+    '*'         [reduce using rule 64 (E)]
+    '/'         [reduce using rule 64 (E)]
+    '^'         [reduce using rule 64 (E)]
+    '['         [reduce using rule 64 (E)]
+    '.'         [reduce using rule 64 (E)]
+    $default    reduce using rule 64 (E)
+
+
+State 168
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   65  | E bito_token E .
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    and_token   [reduce using rule 65 (E)]
+    or_token    [reduce using rule 65 (E)]
+    bita_token  [reduce using rule 65 (E)]
+    bito_token  [reduce using rule 65 (E)]
+    LT          [reduce using rule 65 (E)]
+    GT          [reduce using rule 65 (E)]
+    EQ          [reduce using rule 65 (E)]
+    NE          [reduce using rule 65 (E)]
+    '+'         [reduce using rule 65 (E)]
+    '-'         [reduce using rule 65 (E)]
+    '*'         [reduce using rule 65 (E)]
+    '/'         [reduce using rule 65 (E)]
+    '^'         [reduce using rule 65 (E)]
+    '['         [reduce using rule 65 (E)]
+    '.'         [reduce using rule 65 (E)]
+    $default    reduce using rule 65 (E)
+
+
+State 169
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   68  | E LT E .
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 68 (E)]
+    bito_token  [reduce using rule 68 (E)]
+    $default    reduce using rule 68 (E)
+
+
+State 170
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   67  | E GT E .
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 67 (E)]
+    bito_token  [reduce using rule 67 (E)]
+    $default    reduce using rule 67 (E)
+
+
+State 171
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   69  | E EQ E .
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 69 (E)]
+    bito_token  [reduce using rule 69 (E)]
+    $default    reduce using rule 69 (E)
+
+
+State 172
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   70  | E NE E .
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 70 (E)]
+    bito_token  [reduce using rule 70 (E)]
+    $default    reduce using rule 70 (E)
+
+
+State 173
+
+   60 E: E . '+' E
+   60  | E '+' E .
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 60 (E)]
+    bito_token  [reduce using rule 60 (E)]
+    $default    reduce using rule 60 (E)
+
+
+State 174
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   61  | E '-' E .
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 61 (E)]
+    bito_token  [reduce using rule 61 (E)]
+    $default    reduce using rule 61 (E)
+
+
+State 175
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   62  | E '*' E .
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 62 (E)]
+    bito_token  [reduce using rule 62 (E)]
+    $default    reduce using rule 62 (E)
+
+
+State 176
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   63  | E '/' E .
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    bita_token  [reduce using rule 63 (E)]
+    bito_token  [reduce using rule 63 (E)]
+    $default    reduce using rule 63 (E)
+
+
+State 177
+
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   76  | E '[' E . ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+    ']'         shift, and go to state 188
+
+
+State 178
+
+   77 E: E '.' id_token .
+
+    $default  reduce using rule 77 (E)
+
+
+State 179
+
+   49 line: for_token id_token '=' E . to_token E do_token blok
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    to_token    shift, and go to state 189
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+
+State 180
+
+   48 line: repeat_token lines until_token E .
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+    $default  reduce using rule 48 (line)
+
+
+State 181
+
+   53 ids: ids '[' E ']' .
+
+    $default  reduce using rule 53 (ids)
+
+
+State 182
+
+   18 procedures: procedures procedure_token id_token '(' args ')' . ';' vars blok ';'
+   19           | procedures procedure_token id_token '(' args ')' . ';' forward_token ';'
+
+    ';'  shift, and go to state 190
+
+
+State 183
+
+   25 types: array_token '[' num_token '.' '.' num_token ']' of_token . types
+
+    id_token      shift, and go to state 21
+    int_token     shift, and go to state 22
+    float_token   shift, and go to state 23
+    char_token    shift, and go to state 24
+    array_token   shift, and go to state 25
+    bool_type     shift, and go to state 26
+    record_token  shift, and go to state 27
+    '^'           shift, and go to state 28
+
+    types  go to state 191
+
+
+State 184
+
+   15 functions: functions function_token id_token '(' args ')' ':' types . ';' vars blok ';'
+   16          | functions function_token id_token '(' args ')' ':' types . ';' forward_token ';'
+
+    ';'  shift, and go to state 192
+
+
+State 185
+
+   84 nizE: nizE ',' EP .
+
+    $default  reduce using rule 84 (nizE)
+
+
+State 186
+
+   43 line: if_token '(' E ')' then_token . blok
+   44     | if_token '(' E ')' then_token . blok else_token blok
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 193
+
+
+State 187
+
+   82 E: id_token '(' nizE ')' .
+
+    $default  reduce using rule 82 (E)
+
+
+State 188
+
+   76 E: E '[' E ']' .
+
+    $default  reduce using rule 76 (E)
+
+
+State 189
+
+   49 line: for_token id_token '=' E to_token . E do_token blok
+
+    bool_token    shift, and go to state 93
+    num_token     shift, and go to state 94
+    string_token  shift, and go to state 95
+    id_token      shift, and go to state 96
+    not_token     shift, and go to state 97
+    bitn_token    shift, and go to state 98
+    '('           shift, and go to state 99
+
+    E  go to state 194
+
+
+State 190
+
+   18 procedures: procedures procedure_token id_token '(' args ')' ';' . vars blok ';'
+   19           | procedures procedure_token id_token '(' args ')' ';' . forward_token ';'
+
+    forward_token  shift, and go to state 195
+    var_token      shift, and go to state 18
+
+    $default  reduce using rule 14 (vars)
+
+    vars  go to state 196
+
+
+State 191
+
+   25 types: array_token '[' num_token '.' '.' num_token ']' of_token types .
+
+    $default  reduce using rule 25 (types)
+
+
+State 192
+
+   15 functions: functions function_token id_token '(' args ')' ':' types ';' . vars blok ';'
+   16          | functions function_token id_token '(' args ')' ':' types ';' . forward_token ';'
+
+    forward_token  shift, and go to state 197
+    var_token      shift, and go to state 18
+
+    $default  reduce using rule 14 (vars)
+
+    vars  go to state 198
+
+
+State 193
+
+   43 line: if_token '(' E ')' then_token blok .
+   44     | if_token '(' E ')' then_token blok . else_token blok
+
+    else_token  shift, and go to state 199
+
+    $default  reduce using rule 43 (line)
+
+
+State 194
+
+   49 line: for_token id_token '=' E to_token E . do_token blok
+   60 E: E . '+' E
+   61  | E . '-' E
+   62  | E . '*' E
+   63  | E . '/' E
+   64  | E . bita_token E
+   65  | E . bito_token E
+   67  | E . GT E
+   68  | E . LT E
+   69  | E . EQ E
+   70  | E . NE E
+   71  | E . and_token E
+   72  | E . or_token E
+   75  | E . '^'
+   76  | E . '[' E ']'
+   77  | E . '.' id_token
+
+    do_token    shift, and go to state 200
+    and_token   shift, and go to state 130
+    or_token    shift, and go to state 131
+    bita_token  shift, and go to state 132
+    bito_token  shift, and go to state 133
+    LT          shift, and go to state 134
+    GT          shift, and go to state 135
+    EQ          shift, and go to state 136
+    NE          shift, and go to state 137
+    '+'         shift, and go to state 138
+    '-'         shift, and go to state 139
+    '*'         shift, and go to state 140
+    '/'         shift, and go to state 141
+    '^'         shift, and go to state 142
+    '['         shift, and go to state 143
+    '.'         shift, and go to state 144
+
+
+State 195
+
+   19 procedures: procedures procedure_token id_token '(' args ')' ';' forward_token . ';'
+
+    ';'  shift, and go to state 201
+
+
+State 196
+
+   18 procedures: procedures procedure_token id_token '(' args ')' ';' vars . blok ';'
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 202
+
+
+State 197
+
+   16 functions: functions function_token id_token '(' args ')' ':' types ';' forward_token . ';'
+
+    ';'  shift, and go to state 203
+
+
+State 198
+
+   15 functions: functions function_token id_token '(' args ')' ':' types ';' vars . blok ';'
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 204
+
+
+State 199
+
+   44 line: if_token '(' E ')' then_token blok else_token . blok
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 205
+
+
+State 200
+
+   49 line: for_token id_token '=' E to_token E do_token . blok
+
+    begin_token  shift, and go to state 58
+
+    blok  go to state 206
+
+
+State 201
+
+   19 procedures: procedures procedure_token id_token '(' args ')' ';' forward_token ';' .
+
+    $default  reduce using rule 19 (procedures)
+
+
+State 202
+
+   18 procedures: procedures procedure_token id_token '(' args ')' ';' vars blok . ';'
+
+    ';'  shift, and go to state 207
+
+
+State 203
+
+   16 functions: functions function_token id_token '(' args ')' ':' types ';' forward_token ';' .
+
+    $default  reduce using rule 16 (functions)
+
+
+State 204
+
+   15 functions: functions function_token id_token '(' args ')' ':' types ';' vars blok . ';'
+
+    ';'  shift, and go to state 208
+
+
+State 205
+
+   44 line: if_token '(' E ')' then_token blok else_token blok .
+
+    $default  reduce using rule 44 (line)
+
+
+State 206
+
+   49 line: for_token id_token '=' E to_token E do_token blok .
+
+    $default  reduce using rule 49 (line)
+
+
+State 207
+
+   18 procedures: procedures procedure_token id_token '(' args ')' ';' vars blok ';' .
+
+    $default  reduce using rule 18 (procedures)
+
+
+State 208
+
+   15 functions: functions function_token id_token '(' args ')' ':' types ';' vars blok ';' .
+
+    $default  reduce using rule 15 (functions)

@@ -1,0 +1,4 @@
+pred: pred.s
+	gcc -Wall -no-pie pred.s -o pred
+pred.s:pred.ll
+	llc pred.ll -o pred.s

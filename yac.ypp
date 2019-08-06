@@ -1,0 +1,433 @@
+%{
+#include<iostream>
+#include<cstdlib>
+#include<map>
+#include<vector>
+#include<stack>
+#include"naredbe.hpp"
+using namespace std; 
+#define YYDEBUG 1 
+extern int yylex();
+void yyerror(string s){ 
+cerr<<s<<endl;
+exit(EXIT_FAILURE);
+}
+string ime;
+int inc=0;
+vector<string>* headeri;
+map<string,tip*> tipovi;
+map<string,izraz*> konstante;
+map<string,pair<tip*,izraz*>> globalne;
+map<string,subprogram*>funkcije;
+stack<map<string,pair<tip*,izraz*>>> lokalne; 
+%}
+%union{ 
+bool* b;
+izraz* i;
+naredba* n;
+float f;
+string* nm;
+string* pr;
+vector<izraz*> *vE;
+vector<naredba*> *vN;
+vector<string>* vS;
+vector<pair<string,tip*>>* lST;
+vector<pair<string,izraz*>>* vSI;
+tip* t;
+vector<subprogram*>* vSP;
+pair<string,tip*>* pST;
+map<string,tip*>*mST;
+Glavno* gl;}
+
+%token<b> bool_token
+%token<f> num_token 
+%token<pr> string_token 
+%token<nm> id_token 
+%token begin_token end_token program_token print_token read_token if_token then_token else_token function_token procedure_token
+%token while_token do_token for_token to_token  type_token forward_token continue_token break_token exit_token repeat_token until_token
+%token int_token float_token char_token array_token of_token const_token var_token bool_type record_token 
+%token and_token or_token not_token bita_token bito_token bitn_token
+%type<i> E EP ids constE
+%type<vE> nizE
+%type<vN> lines
+%type<n> line blok
+%type<vS> arg_list  
+%type<t> types 
+%type<vSI> const_list 
+%type<lST> var_list vars args type_list records
+%type<vSP> functions procedures
+%type<gl> start
+%nonassoc else_token
+%left and_token or_token
+%right not_token
+%left LT GT EQ NE
+%left bit_and bit_or
+%right bit_not
+%left '+' '-'
+%left '*' '/'
+%left '^' '[' '.'
+%% 
+start:program_token id_token ';'  def_types consts vars functions procedures blok '.'	{$$=new Glavno(*$2,*$6,*$7,*$8,$9); 
+												if(!($$->provera())){
+													cout<<"greska"<<endl;
+													exit(EXIT_FAILURE);}
+												ime=*$2;
+												if($$->codegen()==nullptr)
+													yyerror("codegen nije uspeo");
+												delete $2;
+												argsRemover($6);
+												functRemover($7);
+												functRemover($8);
+												delete $9;
+												delete $$;
+												mapsRemover(&tipovi);
+											     }
+; 
+def_types: type_token type_list ';'     {argsRemover($2);}			//tipovi nece biti pretvoreni u llvm, samo sluze kao pomoc
+|					{}
+;
+type_list:  type_list ';' arg_list '=' types    {unsigned t=(*$3).size();
+						$$=$1;
+						listmaker($$,$3,$5);
+						for(unsigned i=0;i<t;i++){
+							if(tipovi.find((*$3)[i])==tipovi.end()){
+								tipovi[(*$3)[i]]=$5->kopija();
+								if(tipovi[(*$3)[i]]->naziv()=="struct")
+									tipovi[(*$3)[i]]->setime((*$3)[i]);
+							}
+							else{
+								cout<<"vec je definisan taj tip"<<endl; exit(EXIT_FAILURE);
+							}
+						} 
+						delete $3;
+						delete $5;}
+
+| arg_list '=' types 				{$$=new vector<pair<string,tip*>>();
+						listmaker($$,$1,$3);
+						unsigned t=(*$1).size();
+						for(unsigned i=0;i<t;i++){
+							if(tipovi.find((*$1)[i])==tipovi.end()){
+								tipovi[(*$1)[i]]=$3->kopija();
+								if(tipovi[(*$1)[i]]->naziv()=="struct")
+									tipovi[(*$1)[i]]->setime((*$1)[i]);
+							}
+							else{
+								cout<<"vec je definisan taj tip"<<endl; exit(EXIT_FAILURE);
+							}
+						} 
+						delete $1;
+						delete $3;}
+;
+consts: const_token const_list ';'		{unsigned t=$2->size();
+							for(unsigned i=0;i<t;i++){
+								if(konstante.find((*$2)[i].first)==konstante.end())
+									konstante[(*$2)[i].first]=(*$2)[i].second->kopija();
+								else{
+									yyerror("vec je definisana konstanta " +(*$2)[i].first);}	
+							}
+							for(unsigned i=0;i<t;i++){
+								delete (*$2)[i].second;
+							}
+							delete $2;
+						}
+|						{}
+;
+const_list: const_list ';' id_token  '=' constE	{$$=$1;
+						pair<string,izraz*> tmp(*$3,$5);
+						$$->push_back(tmp);
+						delete $3;}
+
+| id_token  '=' constE				{$$=new vector<pair<string,izraz*>>();
+						pair<string,izraz*> tmp(*$1,$3);
+						$$->push_back(tmp);
+						delete $1;}
+;
+constE: num_token  	{if(((int)$1)!=$1){ 
+				$$=new cons($1,new Float());}
+	      		else
+				$$=new cons($1,new Int());  }
+| 	string_token  	{if($1->size()==1) 
+				$$=new cons((*$1)[0],new Char());
+			else
+				$$=new cons(*$1,new String($1->size()));
+			delete $1;}
+|	bool_token	{$$=new cons(*$1,new Bool());
+			delete $1;}
+
+;
+vars: var_token var_list ';' 	{$$=$2;
+				} 
+|				{$$=new vector<pair<string,tip*>>();}
+;
+
+functions: functions function_token id_token '(' args ')' ':' types ';' vars blok ';'  	{map<string,tip*> tmp;
+											mapmaker(&tmp,$10);
+											
+											$$=$1;
+											$$->push_back(new funkcija(*$3,*$5,$8,tmp,$11));
+											delete $3;
+											argsRemover($5);
+											delete $8;
+											argsRemover($10);
+											delete $11;
+											mapsRemover(&tmp);
+											}
+|  functions  function_token id_token '(' args ')' ':' types ';' forward_token ';'  	{$$=$1;
+											$$->push_back(new funkcijaDekl(*$3,*$5,$8));
+											delete $3;
+											argsRemover($5);
+											delete $8;
+											}
+|											{$$=new vector<subprogram*>();}
+;
+
+
+procedures: procedures procedure_token id_token '(' args ')' ';'  vars blok ';' 	{map<string,tip*> tmp;
+											mapmaker(&tmp,$8);
+											$$=$1;
+											$$->push_back(new procedur(*$3,*$5,tmp,$9));
+											delete $3;
+											argsRemover($5);
+											argsRemover($8);
+											delete $9;
+											mapsRemover(&tmp);
+											}
+| 	procedures procedure_token id_token '(' args ')' ';' forward_token ';'   	{$$=$1;
+											$$->push_back(new procedurDekl(*$3,*$5));
+											delete $3;
+											argsRemover($5);
+											}
+|											{$$=new vector<subprogram*>();}
+;
+
+types: int_token 				{$$=new Int();}
+| float_token					{$$=new Float();}
+| char_token					{$$=new Char();}
+| id_token					{if(tipovi.find(*$1)!=tipovi.end())
+							$$=tipovi[*$1]->kopija();
+						 else{
+							cout<<"ne postoji taj tip"<<endl;
+							exit(EXIT_FAILURE);
+							}
+						delete $1;}
+| array_token '[' num_token '.' '.' num_token ']' of_token types  {if(($3!=(int)$3)||($6!=(int)$6)||$3>$6){
+									cout<<"lose definisan indeks niza"<<endl;
+									exit(EXIT_FAILURE);}
+								   $$=new Array($9,$3,$6);
+								   delete $9;}
+
+| '^' types					{$$=new Pointer($2);delete $2;} 
+| bool_type					{$$=new Bool();}
+| record_token records ';' end_token		{$$=new Struct(imestr+to_string(inc),*$2);inc++;argsRemover($2);}
+;
+
+records: records ';' id_token ':' types	{$$=$1; $$->push_back(pair<string,tip*>(*$3,$5->kopija())); delete $3; delete $5;}
+
+| id_token ':' types			{$$=new vector<pair<string,tip*>>();
+					 $$->push_back(pair<string,tip*>(*$1,$3->kopija()));
+						delete $1;delete $3;}
+;
+
+args:var_list		{$$=$1;}
+|			{$$=new vector<pair<string,tip*>>();}
+;
+var_list: var_list ';' arg_list ':' types  	{$$=$1;
+						listmaker($$,$3,$5);
+						delete $3;
+						delete $5;}
+|    arg_list ':' types 			{$$=new vector<pair<string,tip*>>();
+						listmaker($$,$1,$3);
+						delete $1;
+						delete $3;}
+;
+arg_list: arg_list ',' id_token     {$$=$1; $$->push_back(*$3); delete $3;}
+| id_token                          {$$=new vector<string>();
+				     $$->push_back(*$1);delete $1;}
+;
+
+blok: begin_token lines end_token       {$$=new blok(*$2);
+					unsigned t=$2->size();
+					for(unsigned i=0;i<t;i++)
+						delete (*$2)[i];
+					 delete $2;}
+;
+lines:  lines line ';'                  {$$=$1; $$->push_back($2);}
+| line ';'                              {$$=new vector<naredba*>(); $$->push_back($1);}
+; 
+line: print_token '(' E ')'                           {$$=new ispisE($3);
+							delete $3;} 
+| read_token '(' E ')'				      {$$=new citajE($3);
+							delete $3;}           
+| ids '=' EP                                           {$$=new dodelaE($1,$3); 
+							delete $1;
+							delete $3;}
+| if_token '(' E ')' then_token blok                  {$$=new ifThen($3,$6); 
+							delete $3; 
+							delete $6;}
+| if_token '(' E ')' then_token blok else_token blok  {$$=new ifThenElse($3,$6,$8); 
+							delete $3; 
+							delete $6; 
+							delete $8;} 
+| break_token					      {$$=new Break();}
+| continue_token				      {$$=new Continue();}
+| while_token E do_token blok     		      {$$=new While($2,$4); 
+							delete $2; 
+							delete $4;}
+| repeat_token lines until_token E     		      {naredba* tmp=new blok(*$2);
+						       $$=new repeatUntil($4,tmp); 				
+							unsigned t=$2->size();
+							for(unsigned i=0;i<t;i++)
+								delete (*$2)[i];
+							delete $2;
+							delete tmp; 
+							delete $4;}
+| for_token id_token '=' E to_token E do_token blok   {$$=new forTo(*$2,$4,$6,$8);
+							delete $2; 
+							delete $4; 
+							delete $6; 
+							delete $8;}
+| id_token '(' nizE ')'  			      {$$=new procedura(*$1,*$3);
+							delete $1;
+							unsigned t=$3->size();
+							for(unsigned i=0;i<t;i++)
+								delete (*$3)[i];
+							delete $3;} 
+| id_token '(' ')'       			      {vector<izraz*>* tmp=new vector<izraz*>();
+							$$=new procedura(*$1,*tmp);
+							delete $1;
+							delete tmp;}
+| exit_token						{$$=new kraj();}
+; 
+
+ids: ids '[' E ']'	{$$=new Niz($1,$3);
+			delete $1;
+			delete $3;}
+|    ids '^'		{$$=new pokazivac($1);
+			delete $1;}
+|   '(' ids ')'		{$$=$2;}
+| ids '.' id_token 	{$$=new struktura($1,*$3);delete $1; delete $3;}
+|   id_token		{$$=new prom(*$1,new Tmp());
+			delete $1;}
+;
+
+EP: '@' E	{$$=new adresa($2); delete $2;}
+|   E		{$$=$1;}
+;
+
+
+E: E '+' E   {$$=new zbir($1,$3);
+		delete $1;
+		delete $3; 
+		}
+| E '-' E    {$$=new razlika($1,$3);
+		delete $1;
+		delete $3;
+		} 
+| E '*' E    {$$=new proizvod($1,$3);
+		delete $1;
+		delete $3;
+		} 
+| E '/' E    {$$=new kolicnik($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E bita_token E	{$$=new BitAnd($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E bito_token E	{$$=new BitOr($1,$3);
+		delete $1;
+		delete $3;
+		}
+| bitn_token E	{$$=new BitNot($2);
+		delete $2;
+		}
+| E GT E     {$$=new grtr($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E LT E     {$$=new lss($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E EQ E     {$$=new eq($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E NE E     {$$=new neq($1,$3);
+		delete $1;
+		delete $3;
+		} 
+| E and_token E {$$=new And($1,$3);
+		delete $1;
+		delete $3;
+		}
+| E or_token E {$$=new Orr($1,$3);
+		delete $1;
+		delete $3;
+		}
+| not_token E	      {$$=new Not($2);
+		delete $2;
+		}
+| '(' E ')'  {$$=$2;} 
+|    E '^'   {$$=new pokazivac($1);
+		delete $1;}
+| E '[' E ']'  {$$=new Niz($1,$3);
+		delete $1;
+		delete $3;}
+| E '.' id_token {$$=new struktura($1,*$3);
+		  delete $1;
+		  delete $3;}
+|  id_token    {if(konstante.find(*$1)==konstante.end())
+			$$=new prom(*$1,new Tmp());
+		else{
+			tip* tmp=konstante[*$1]->provera();
+			$$=new cons(konstante[*$1],tmp->kopija());
+			delete tmp;
+		}
+		delete $1;}
+| num_token  {if(((int)$1)!=$1){ 
+		$$=new cons($1,new Float());}
+	      else{
+		$$=new cons((int)$1,new Int());}  }
+| string_token  {if($1->size()==1) 
+			$$=new cons((*$1)[0],new Char());
+		else
+			$$=new cons(*$1,new String($1->size()));
+		delete $1;} 
+| id_token '(' ')' {$$=new poziv(*$1,vector<izraz*>(),new Tmp());
+			delete $1;}
+| id_token '(' nizE ')' {$$=new poziv(*$1,*$3,new Tmp());
+			delete $1; 
+			unsigned t=$3->size();
+			for(unsigned i=0;i<t;i++)
+				delete (*$3)[i]; 
+			delete $3;
+			}
+| bool_token	{$$=new cons(*$1,new Bool());delete $1;}
+;
+nizE:nizE ',' EP {$$=$1;
+		$$->push_back($3);} 
+| EP	{$$=new vector<izraz*>();
+	$$->push_back($1);}
+;
+%%
+
+int main(){
+yydebug=0; 
+TheModule= new Module(ime,TheContext);
+
+TheFPM=new legacy::FunctionPassManager(TheModule);
+TheFPM->add(createInstructionCombiningPass());
+TheFPM->add(createReassociatePass());
+TheFPM->add(createNewGVNPass());
+TheFPM->add(createCFGSimplificationPass());
+TheFPM->doInitialization();
+yyparse();
+TheModule->print(outs(),nullptr);
+
+
+delete TheModule;
+delete TheFPM;
+return 0;
+}

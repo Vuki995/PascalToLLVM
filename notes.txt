@@ -1,0 +1,204 @@
+pokretanje:
+
+make llvm -kompilacija koda
+
+./a.out < naziv_fajla  -generisanje llvm koda u terminalu
+
+./a.out <naziv_fajla >pred.ll -cuvanje llvm koda u pred.ll
+
+make end - kompilacija pred.ll
+
+./pred - pokretanje kompiliranog pascal koda
+
+tipovi:
+int
+float
+char
+bool
+pointer
+array
+struct
+(void, string) pomocni tipovi
+
+konstante:
+int
+float
+char
+string
+bool
+
+globalne:
+niz imena-tip
+
+funkcije:
+deklaracije
+definicije
+
+procedure:
+deklaracije
+definicije
+
+naredbe:
+blok
+printf
+scanf
+dodela
+ifthen
+ifthenelse
+while
+for
+repeatuntil
+procedureCall
+break
+continue
+exit
+
+izrazi:
++	zbir
+-	razlika
+*	proizvod
+/	kolicnik
+<	manje
+>	vece
+==	jednako
+!=	razlicito
+@	adresa
+[]	element niza
+^	vrednost pointera
+.	element strukture
+&&	logicko i
+||	logicko ili
+!	logicko ne
+&	bitovsko i
+|	bitovsko ili
+~	bitovsko ne
+const
+var
+()
+call	poziv funkcije
+
+
+--------------------------
+
+
+tip:
+	def_tipa=naziv_tipa
+	def_tipa->naziv_tipa || int || float || bool || char || pointer || array || struct
+
+const:
+	naziv_const= vred
+	vred->int || float || char || string || bool
+
+globalne,lokalne:
+	niz_imena : naziv_tipa
+
+funkcije:
+	dekl:
+		function_token naziv_funkcije (	niz_imena : naziv_tipa,...) : naziv_tipa ; forward_token;
+	def:
+		function_token naziv_funkcije (	niz_imena : naziv_tipa,...) : naziv_tipa ;lokalne ; begin telo end; 
+
+procedure:
+	dekl:
+		procedure_token naziv_procedure (niz_imena : naziv_tipa,...) ; forward_token;
+	def:
+		procedure_token naziv_procedure ( niz_imena : naziv_tipa,...)  ;lokalne ; begin telo end; 
+
+telo:
+	begin komande end
+
+komande:
+	ispis:
+		writeln( izraz ) 
+		izraz->int || float || char || string || pointer
+	citanje:
+		read( izraz) 
+		izraz-> int || float || char
+	dodela:
+		izraz = izraz 
+		izraz -> int || float || bool || char || pointer || array || struct 
+		float==int && int ==float
+	ifthen:
+		if_token izraz do_token komande 
+		izraz-> int || float || bool
+	ifthenelse:
+		if_token izraz do_token komande else_token komande 
+		izraz-> int || float || bool
+	while:
+		while_token izraz do_token komande
+		izraz -> int || float || bool
+	repeat:
+		repeat komande until izraz
+		izraz -> int || float || bool
+	forto:
+		for ime_prom = izraz to izraz do_token komande
+		izraz -> int
+	poziv:
+		naziv_procedure ( niz_argumenata) 
+		niz_argumenata -> izraz
+	break,continue,exit:
+		....
+
+izraz:
+	+ :
+		izraz + izraz
+		izraz -> int || float
+	- :
+		izraz - izraz
+		izraz -> int || float
+	* :
+		izraz * izraz
+		izraz -> int || float
+	/ :
+		izraz / izraz
+		izraz -> int || float
+	& :
+		izraz & izraz
+		izraz -> int || bool
+	| :
+		izraz | izraz
+		izraz -> int || bool
+	~ :
+		~izraz
+		izraz -> int || bool
+	> :
+		izraz > izraz
+		izraz ->int || float
+	< :
+		izraz < izraz
+		izraz ->int || float
+	== :
+		izraz == izraz
+		izraz ->int || float
+	!= :
+		izraz != izraz
+		izraz ->int || float
+	^ :
+		^izraz
+		izraz->pointer
+	[] :
+		izraz [ izraz2 ]
+		izraz -> array
+		izraz2 ->int
+	@ :
+		@izraz
+		izraz -> int || float || bool || char || pointer || array || struct
+	. :
+		izraz.naziv_elementa
+		izraz -> struct
+	and :
+		izraz and izraz
+		izraz -> int || float || bool
+	or :
+		izraz or izraz
+		izraz -> int || float || bool
+	not : 	
+		not izraz
+		izraz -> int || float || bool
+	const:
+		const_vrednost
+		int || float || bool || char || string
+	prom:
+		naziv_prom
+	poziv:
+		ime_funkcije ( niz_argumenata )
